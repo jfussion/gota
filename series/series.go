@@ -785,3 +785,23 @@ func (s Series) Map(f MapFunction) Series {
 	}
 	return New(mappedValues, s.Type(), s.Name)
 }
+
+// Slice slices Series from j to k-1 index.
+func (s Series) Slice(j, k int) Series {
+	if err := s.Err; err != nil {
+		return s
+	}
+
+	if j > k {
+		empty := s.Empty()
+		empty.Err = fmt.Errorf("slice index out of bounds")
+		return empty
+	}
+
+	indixes := []int{}
+	for i := j; i < k; i++ {
+		indixes = append(indixes, i)
+	}
+
+	return s.Subset(indixes)
+}
